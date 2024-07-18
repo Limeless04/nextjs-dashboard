@@ -14,12 +14,12 @@ export async function fetchRevenue() {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    console.log('Fetching revenue data...');
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const data = await sql<Revenue>`SELECT * FROM revenue`;
 
-    // console.log('Data fetch completed after 3 seconds.');
+    console.log('Data fetch completed after 3 seconds.');
 
     return data.rows;
   } catch (error) {
@@ -31,7 +31,7 @@ export async function fetchRevenue() {
 export async function fetchLatestInvoices() {
   try {
     const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
+     SELECT invoices.amount, customers.name, customers.image_url, customers.email
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       ORDER BY invoices.date DESC
@@ -183,6 +183,25 @@ export async function fetchCustomers() {
   }
 }
 
+export async function invoiceCountPromise() {
+  try {
+    const data = await sql<InvoiceForm>`SELECT COUNT(*) FROM invoices`;
+    return data
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customer table.');
+  }
+}
+
+export async function customerCountPromise() {
+  try {
+    const data = await sql<CustomersTableType>`SELECT COUNT(*) FROM customers`;;
+    return data
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customer table.');
+  }
+}
 export async function fetchFilteredCustomers(query: string) {
   try {
     const data = await sql<CustomersTableType>`
